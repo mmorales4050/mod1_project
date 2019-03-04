@@ -1,8 +1,11 @@
 require 'io/console'
 
-class Room
+class Room < ActiveRecord::Base
 
-  def initialize
+  after_initialize do |room|
+    # Add class for item
+    @inventory = " "
+    @item_location = nil
     @door_location = nil
     @player_location = nil
     @width = 27
@@ -19,54 +22,78 @@ class Room
 |                         |
 |                         |
 |                         |
----------------------------"
+---------------------------\n\n
+Inventory: #{self.inventory}"
   end
   # Prints a room to the screen
   def draw_room
     puts @room
   end
 
-  def add_bottom_door
-    @door_location = (@room.length) - (@width/2)
-    @room[@door_location] = "|"
-    @room[@door_location + 1] = "|"
+  def inventory
+    @inventory = Item.all.select { |item| item.in_inventory? == true }
   end
 
+  def add_item
+    @item_location = ((@room.length/2) + 10)
+    @room[@item_location] = "0"
+  end
+
+  def clear_inventory
+    inventory.each { |item| item.update(in_inventory?: false)}
+  end
+
+  def pickup_item
+    # Add item to inventory
+    # Add item to database
+    #sword.in_inventory? = true
+
+    sword = Item.find_by(name: 'sword')
+    sword.update(in_inventory?: true)
+    clear_screen
+    draw_room
+  end
+
+  # def add_bottom_door
+  #   @door_location = (@room.length) - (@width/2)
+  #   @room[@door_location] = "|"
+  #   @room[@door_location + 1] = "|"
+  # end
+
   def spawn_player
-    @player_location = @door_location - @width
+    @player_location = ((@room.length/2) + 15)
     @room[@player_location] = "@"
   end
 
-  def move_up
-    if @room[@player_location - (@width + 1)] == " "
-      @room[@player_location] = " "
-      @player_location -= (@width + 1)
-      @room[@player_location] = "@"
-    end
-  end
+  def move(operator)
+    @room[@player_location] = " "
 
-  def move_down
-    if @room[@player_location + (@width + 1)] == " "
-      @room[@player_location] = " "
-      @player_location += (@width + 1)
-      @room[@player_location] = "@"
-    end
-  end
+    case operator
+    when :up
+      if @room[@player_location - (@width + 1)] == " "
+        @player_location -= (@width + 1)
+      elsif @room[@player_location - (@width + 1)] == "0"
+        pickup_item
+        @player_location -= (@width + 1)
+      end
 
-  def move_right
-    if @room[@player_location + 1] == " "
-      @room[@player_location] = " "
-      @player_location += 1
-      @room[@player_location] = "@"
-    end
-  end
+    when :down
+      if @room[@player_location + (@width + 1)] == " "
+        @player_location += (@width + 1)
+      end
 
-  def move_left
-    if @room[@player_location - 1] == " "
-      @room[@player_location] = " "
-      @player_location -= 1
-      @room[@player_location] = "@"
+    when :right
+      if @room[@player_location + 1] == " "
+        @player_location += 1
+      end
+
+    when :left
+      if @room[@player_location - 1] == " "
+        @player_location -= 1
+      end
     end
+
+    @room[@player_location] = "@"
   end
 
   def clear_screen
@@ -81,13 +108,13 @@ class Room
       system("stty -raw echo")
       case user_input
       when "d"
-        move_right
+        move(:right)
       when "a"
-        move_left
+        move(:left)
       when "w"
-        move_up
+        move(:up)
       when "s"
-        move_down
+        move(:down)
       when "p"
         break
       else
@@ -96,6 +123,7 @@ class Room
       clear_screen
     end
   end
+
 end
 
 # puts 'Do you want to proceed? y/n'
@@ -117,8 +145,9 @@ end
 #   end
 # end
 #
-room = Room.new
-room.clear_screen
-room.add_bottom_door
-room.spawn_player
-room.movement_loop
+# room = Room.new
+# room.clear_screen
+# room.add_item
+# room.add_bottom_door
+# room.spawn_player
+# room.movement_loop
