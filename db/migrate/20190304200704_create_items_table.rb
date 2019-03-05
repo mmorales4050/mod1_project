@@ -4,6 +4,7 @@ class CreateItemsTable < ActiveRecord::Migration[5.2]
       item.string :name
       item.string :category
       item.boolean :in_inventory?
+      item.integer :damage
     end
   end
 end
