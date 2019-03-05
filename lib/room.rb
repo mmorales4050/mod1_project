@@ -1,6 +1,8 @@
 require 'io/console'
 
 class Room < ActiveRecord::Base
+  has_many :item
+
 
   after_initialize do |room|
     # Add class for item
@@ -37,12 +39,12 @@ class Room < ActiveRecord::Base
   end
 
   def inventory
-    
+
     @inventory = Item.all.select { |item| item.in_inventory? == true }.map{|item| item.name}
   end
 
-
-  def add_item
+  #places a '0' for the location of an item
+  def place_item
     @item_location = ((@room.length/2) + 10)
     @room[@item_location] = "0"
   end
@@ -53,24 +55,11 @@ class Room < ActiveRecord::Base
   end
 
   def pickup_item
-    sword = Item.find_by(name: 'sword')
-    sword.update(in_inventory?: true)
-
-    # # Add item to inventory
-    # # Add item to database
-    # #sword.in_inventory? = true
-    #
     # sword = Item.find_by(name: 'sword')
     # sword.update(in_inventory?: true)
-    # clear_screen
-    # draw_room
+    item = Item.generate_item.update(in_inventory?: true)
+    Player.create(item: item)
   end
-
-  # def add_bottom_door
-  #   @door_location = (@room.length) - (@width/2)
-  #   @room[@door_location] = "|"
-  #   @room[@door_location + 1] = "|"
-  # end
 
   def spawn_player
     @player_location = ((@room.length/2) + 15)
@@ -141,6 +130,7 @@ class Room < ActiveRecord::Base
       when "i"
         inventory_display
       when "p"
+        Item.destroy_all
         break
       else
         puts "select valid command"
@@ -174,7 +164,7 @@ end
 #
 # room = Room.new
 # room.clear_screen
-# room.add_item
+# room.place_item
 # room.add_bottom_door
 # room.spawn_player
 # room.movement_loop
