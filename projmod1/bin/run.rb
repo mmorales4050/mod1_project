@@ -1,4 +1,5 @@
 require_relative '../config/environment.rb'
+require_relative 'game.rb'
 
-Room.create(name: "first_room")
-puts Room.all
+
+Game.new.movement_loop(Room.create)

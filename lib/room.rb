@@ -1,7 +1,7 @@
 require 'io/console'
 
 class Room < ActiveRecord::Base
-  has_many :items
+  has_many :item
 
 
   after_initialize do |room|
@@ -55,8 +55,6 @@ class Room < ActiveRecord::Base
   end
 
   def pickup_item
-    # sword = Item.find_by(name: 'sword')
-    # sword.update(in_inventory?: true)
     item = Item.generate_item.update(in_inventory?: true)
     Player.create(item: item)
   end
