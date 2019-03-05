@@ -1,6 +1,6 @@
 class Item < ActiveRecord::Base
-  belongs_to :room
-  belongs_to :player
+  belongs_to :rooms
+  belongs_to :players
 
 
   sword = Item.create(name: "sword", category: "weapon", in_inventory?: false)

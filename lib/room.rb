@@ -1,7 +1,7 @@
 require 'io/console'
 
 class Room < ActiveRecord::Base
-  has_many :item
+  has_many :items
 
 
   after_initialize do |room|
