@@ -5,8 +5,9 @@ class Player < ActiveRecord::Base
   attr_accessor :location
 
   def inventory_display
-    puts "Inventory:"
-    puts Item.all.map { |item| item.name }
+    inv_list = "Inventory: "
+    Item.all.each { |item| inv_list += (item.name + " ") }
+    print inv_list
   end
 
 

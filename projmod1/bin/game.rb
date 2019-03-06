@@ -26,18 +26,6 @@ class Game
 
   def game_loop
     Game.clear_screen
-    # Intro screen BEGIN
-    prompt = TTY::Prompt.new
-    font = TTY::Font.new(:doom)
-    pastel = Pastel.new
-
-    puts "\n"
-    puts pastel.bright_white.bold(font.write("THE ROOM"))
-    puts "\n"
-
-    # Intro screen END
-    sleep(1)
-    Game.clear_screen
     player = Player.new
     room = Room.create
     spawn_player(room, player)
@@ -52,7 +40,9 @@ class Game
         item_just_broke = true
       end
       player_inv = Item.all.length
-      item_damage = Item.all.last.damage
+      if player_inv > 0
+        item_damage = Item.all.last.damage
+      end
       user_input = Game.get_input
       inv_open = false
       Game.clear_screen
@@ -78,8 +68,10 @@ class Game
         player.inventory_display
       end
       # left off here
-      if Item.all.last.damage > item_damage
-        puts "Your items have been enchanted!(+1 damage)"
+      if player_inv > 0
+        if Item.all.last.damage > item_damage
+          puts "Your items have been enchanted!(+1 damage)"
+        end
       end
 
       if Item.all.length > player_inv

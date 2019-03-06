@@ -5,21 +5,22 @@ class Room < ActiveRecord::Base
 
   after_initialize do
     #we could refactor this to generate a random sized room for every instance
-    @height = 12 #rand(12...20)
-    @width = 27  #((height * 2) + 3)
-    @floor =     # could create a constructor method below that uses the instance height to generate a room with the appropriate number of '-', ' ', and '|'
-"---------------------------
-|                         |
-|                         |
-|                         |
-|                         |
-|                         |
-|                         |
-|                         |
-|                         |
-|                         |
-|                         |
----------------------------"
+    @width = `tput cols`.to_i #rand(12...20)
+    @height = (`tput lines`.to_i - 5)  #((width * 2) + 3)
+    @floor = ("-"*@width) + ("|" + (" "*(@width - 2)) + "|\n") *(@height) + ("-"*@width).to_s    # could create a constructor method below that uses the instance height to generate a room with the appropriate number of '-', ' ', and '|'
+
+# "---------------------------
+# |                         |
+# |                         |
+# |                         |
+# |                         |
+# |                         |
+# |                         |
+# |                         |
+# |                         |
+# |                         |
+# |                         |
+# ---------------------------"
 
     #generates a random number between 1 & 3
     num_items = rand(1...10)
@@ -37,16 +38,25 @@ class Room < ActiveRecord::Base
     end
   end
 
+  def create_map(width, height)
+    floor = ("-"*width) + ("|" + (" "*(width - 2)) + "|\n") *(height) + ("-"*width).to_s    # could create a constructor method below that uses the instance height to generate a room with the appropriate number of '-', ' ', and '|'
+    number_of_walls = rand(50..70)
+    number_of_walls.times do
+      wall_location = (rand(2..(width - 2)) + width)
+      height.times do
+        if rand(0..100) > 60
+          floor[wall_location] = " "
+        else
+          floor[wall_location] = "x"
+        end
+        wall_location += (width + 1)
+      end
+    end
+    return floor
+  end
 
   #show this instance of the floorplan
   def draw_room
-    prompt = TTY::Prompt.new
-    font = TTY::Font.new(:doom)
-    pastel = Pastel.new
-
-    puts "\n"
-    puts pastel.bright_white.bold(font.write("THE ROOM"))
-    puts "\n"
     puts self.floor
   end
 
