@@ -2,11 +2,11 @@ require_relative 'config/environment.rb'
 require_relative 'bin/game.rb'
 
 Game.clear_screen
-terminal_size = `tput cols`
-terminal_size_1 = `tput lines`
 
-print "-"*terminal_size.to_i
+height = `tput cols`
 
-print  ("|" + (" "*(terminal_size.to_i - 2)) + "|\n") *(terminal_size_1.to_i - 3)
+width = `tput lines`
 
-print "-"*terminal_size.to_i
+floor = "-"*height.to_i + ("|" + (" "*(height.to_i - 2)) + "|\n") *(width.to_i - 3) + "-"*height.to_i
+
+print floor

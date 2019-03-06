@@ -52,7 +52,7 @@ class Game
         item_just_broke = true
       end
       player_inv = Item.all.length
-      item_damage = Item.last.damage
+      item_damage = Item.all.last.damage
       user_input = Game.get_input
       inv_open = false
       Game.clear_screen
@@ -78,7 +78,7 @@ class Game
         player.inventory_display
       end
       # left off here
-      if Item.last(:damage) > item_damage
+      if Item.all.last.damage > item_damage
         puts "Your items have been enchanted!(+1 damage)"
       end
 
