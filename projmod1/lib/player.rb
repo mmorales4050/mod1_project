@@ -4,36 +4,26 @@ class Player < ActiveRecord::Base
 
   attr_accessor :location
 
-  @@location = nil
-
-  def self.location
-    @@location
-  end
-
-  def self.location=(variable)
-    @@location = variable
-  end
-
-  def self.inventory_display
+  def inventory_display
     puts "Inventory:"
-    # puts self.inventory
-    user_input = nil
-    while user_input.nil?
-      user_input = Game.get_input
-    end
+    puts Item.all.map { |item| item.name }
+  end
+
+  def check(direction, char)
+
   end
 
 
-  def self.move(operator, room)
+  def move(operator, room)
     room.floor[self.location] = " "
 
     case operator
     when :up
       if room.floor[self.location - (room.width + 1)] == " "
         self.location -= (room.width + 1)
-      elsif room.floor[self.location - (room.width + 1)] == "0"
-        pickup_item
+      elsif room.floor[self.location - (room.width + 1)] == "i"
         self.location -= (room.width + 1)
+        Item.generate_item
       end
 
     when :down
