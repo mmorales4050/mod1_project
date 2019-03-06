@@ -23,17 +23,38 @@ class Game
     user_input
   end
 
+
   def game_loop
+    Game.clear_screen
+    # Intro screen BEGIN
+    prompt = TTY::Prompt.new
+    font = TTY::Font.new(:doom)
+    pastel = Pastel.new
+
+    puts "\n"
+    puts pastel.bright_white.bold(font.write("THE ROOM"))
+    puts "\n"
+
+    # Intro screen END
+    sleep(1)
+    Game.clear_screen
     player = Player.new
     room = Room.create
     spawn_player(room, player)
     room.draw_room
+    player_inv = 0
 
     #spawn_item(room)
     while true
+      # Check if items break
+      item_just_broke = false
+      if player_inv > 0 && rand(100) == 2
+        item_just_broke = true
+      end
       player_inv = Item.all.length
+      item_damage = Item.last.damage
       user_input = Game.get_input
-      inv_open = 0
+      inv_open = false
       Game.clear_screen
 
           case user_input
@@ -46,21 +67,29 @@ class Game
           when "s"
             player.move(:down, room)
           when "i"
-            inv_open = 1
+            inv_open = true
           when "p"
             Item.destroy_all
             break
           end
-          
+
       room.draw_room
-      if inv_open == 1
+      if inv_open == true
         player.inventory_display
+      end
+      # left off here
+      if Item.last(:damage) > item_damage
+        puts "Your items have been enchanted!(+1 damage)"
       end
 
       if Item.all.length > player_inv
         puts "You picked up a #{Item.last.name}"
       end
 
+      if item_just_broke == true
+        puts "Your #{Item.first.name} just broke!"
+        Item.first.delete
+      end
     end
 
   end

@@ -22,7 +22,7 @@ class Room < ActiveRecord::Base
 ---------------------------"
 
     #generates a random number between 1 & 3
-    num_items = rand(1...3)
+    num_items = rand(1...10)
     num_items.times do
       loop do
         #select a random number between ((after first row)..(before last row))
@@ -40,6 +40,13 @@ class Room < ActiveRecord::Base
 
   #show this instance of the floorplan
   def draw_room
+    prompt = TTY::Prompt.new
+    font = TTY::Font.new(:doom)
+    pastel = Pastel.new
+
+    puts "\n"
+    puts pastel.bright_white.bold(font.write("THE ROOM"))
+    puts "\n"
     puts self.floor
   end
 

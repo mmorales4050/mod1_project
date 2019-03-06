@@ -5,10 +5,12 @@ class Item < ActiveRecord::Base
 
   def self.generate_item
     #return an item and save it to database
-    item_name = ['Sword', 'Dagger', 'Axe']
-    generated_item = Item.create(name: item_name.sample,
-                                category: 'Weapon',
-                                damage: 1)
+    weapon_name = ['Sword', 'Dagger', 'Axe']
+    if  Item.all.length > 0 && rand(100) > 80
+      Item.all.each{ |item|  item.damage += 1}
+    else
+      Item.create(name: weapon_name.sample, category: 'weapon', damage: 1)
+    end
   end
 
 end
