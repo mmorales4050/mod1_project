@@ -28,6 +28,8 @@ class Game
     Game.clear_screen
     player = Player.new
     room = Room.create
+    # create_map method adds walls to the map
+    room.floor = room.create_map(room.width, room.height)
     spawn_player(room, player)
     room.draw_room
     player_inv = 0
