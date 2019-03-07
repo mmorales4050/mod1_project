@@ -76,8 +76,10 @@ class Player < ActiveRecord::Base
   end
 
   def move_runner(operator, room, floor)
-    if self.location < (room.floor.length)
-      room.floor[self.location] = " "
+    room.floor[self.location] = " "
+    while self.location !< (room.floor.length) && self.location > 0
+      self.location == rand(0..(room.floor.length/2))
+    end
       case operator
       when :up
         set(:up, room)
@@ -89,9 +91,8 @@ class Player < ActiveRecord::Base
         set(:left, room)
       end
       room.floor[self.location] = " "
-    else
-      self.location == rand(0..(room.floor.length/2))
     end
+
   end
 
 end
