@@ -5,7 +5,7 @@ class Room < ActiveRecord::Base
 
   after_initialize do
     #we could refactor this to generate a random sized room for every instance
-    @width = `tput cols`.to_i #rand(12...20)
+    @width = (`tput cols`.to_i) #rand(12...20)
     @height = (`tput lines`.to_i - 5)  #((width * 2) + 3)
     @floor = ("-"*@width) + ("|" + (" "*(@width - 2)) + "|\n") *(@height) + ("-"*@width).to_s    # could create a constructor method below that uses the instance height to generate a room with the appropriate number of '-', ' ', and '|'
 
@@ -55,17 +55,23 @@ class Room < ActiveRecord::Base
   #   return floor
   # end
 
-  def create_map(width, height, runners)
-    floor = ("#"*width) + ("#" + ("#"*(width - 2)) + "#\n") *(height) + ("#"*width).to_s
-    player = Player.new
-    game = Game.new
-    game.spawn_player
-    runners.times do
-      random_less_than_width = rand(0..width)
-      random_less_than_height = rand(0..height)
-      
+  def create_map
+    wall = "#"
+    space = " "
+    line_end = "\n"
+    horizontal_group = self.width/10
+    verticle_group = self.height/10
+    solid_line = wall*self.width
+
+    final_map = ""
+    final_map += solid_line + line_end
+    self.height.times do
+      verticle_group.times do
+        final_map += (wall + (space*horizontal_group) + wall)*horizontal_group + line_end
+      end
+      final_map += solid_line + line_end
     end
-    return floor
+    return final_map
   end
   #show this instance of the floorplan
   def draw_room
