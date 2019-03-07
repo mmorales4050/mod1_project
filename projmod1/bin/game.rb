@@ -28,8 +28,7 @@ class Game
     Game.clear_screen
     player = Player.new
     room = Room.create
-    # create_map method adds walls to the map
-    room.floor = room.create_map(room.width, room.height)
+    #room.create_map(1)
     spawn_player(room, player)
     room.draw_room
     player_inv = 0
@@ -51,13 +50,13 @@ class Game
 
           case user_input
           when "d"
-            player.move(:right, room)
+            player.move(:right, room, " ")
           when "a"
-            player.move(:left, room)
+            player.move(:left, room, " ")
           when "w"
-            player.move(:up, room)
+            player.move(:up, room, " ")
           when "s"
-            player.move(:down, room)
+            player.move(:down, room, " ")
           when "i"
             inv_open = true
           when "p"
@@ -86,6 +85,17 @@ class Game
       end
     end
 
+  end
+
+  def test_loop
+    Game.clear_screen
+    puts "creating player"
+    player = Player.new
+    puts "creating room"
+    room = Room.new
+    puts "creating map"
+    room.create_map(1000, player)
+    room.draw_room
   end
 
 end

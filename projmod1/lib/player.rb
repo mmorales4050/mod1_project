@@ -38,12 +38,11 @@ class Player < ActiveRecord::Base
   end
 
 
-  def move(operator, room)
-    room.floor[self.location] = " "
-
+  def move(operator, room, floor)
+    room.floor[self.location] = floor
     case operator
     when :up
-      if check(:up, " ", room)#room.floor[self.location - (room.width + 1)] == " "
+      if check(:up, floor, room)#room.floor[self.location - (room.width + 1)] == floor
         set(:up, room)
       elsif check(:up, "i", room)
         set(:up, room)
@@ -51,7 +50,7 @@ class Player < ActiveRecord::Base
       end
 
     when :down
-      if check(:down, " ", room)#room.floor[self.location - (room.width + 1)] == " "
+      if check(:down, floor, room)#room.floor[self.location - (room.width + 1)] == floor
         set(:down, room)
       elsif check(:down, "i", room)
         set(:down, room)
@@ -59,22 +58,40 @@ class Player < ActiveRecord::Base
       end
 
     when :right
-      if check(:right, " ", room)#room.floor[self.location - (room.width + 1)] == " "
+      if check(:right, floor, room)#room.floor[self.location - (room.width + 1)] == floor
         set(:right, room)
       elsif check(:right, "i", room)
         set(:right, room)
         Item.generate_item
       end
     when :left
-      if check(:left, " ", room)#room.floor[self.location - (room.width + 1)] == " "
+      if check(:left, floor, room)#room.floor[self.location - (room.width + 1)] == " "
         set(:left, room)
       elsif check(:left, "i", room)
         set(:left, room)
         Item.generate_item
       end
     end
-
     room.floor[self.location] = "@"
+  end
+
+  def move_runner(operator, room, floor)
+    if self.location < (room.floor.length)
+      room.floor[self.location] = " "
+      case operator
+      when :up
+        set(:up, room)
+      when :down
+        set(:down, room)
+      when :right
+        set(:right, room)
+      when :left
+        set(:left, room)
+      end
+      room.floor[self.location] = " "
+    else
+      self.location == rand(0..(room.floor.length/2))
+    end
   end
 
 end

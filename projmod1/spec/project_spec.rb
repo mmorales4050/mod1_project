@@ -20,7 +20,7 @@ describe "Project" do
       room.height = 100
       game.spawn_player(room, player)
       start_location = player.location
-      player.move(:up, room)
+      player.move(:up, room, " ")
       expect(room.floor[player.location]).to eq(room.floor[start_location - (room.width + 1)])
     end
   end
@@ -34,7 +34,7 @@ describe "Project" do
       room.height = 100
       game.spawn_player(room, player)
       start_location = player.location
-      player.move(:down, room)
+      player.move(:down, room, " ")
       expect(room.floor[player.location]).to eq(room.floor[start_location + (room.width + 1)])
     end
   end
@@ -48,7 +48,7 @@ describe "Project" do
       room.height = 100
       game.spawn_player(room, player)
       start_location = player.location
-      player.move(:right, room)
+      player.move(:right, room, " ")
       expect(room.floor[player.location]).to eq(room.floor[start_location + 1])
     end
   end
@@ -61,7 +61,7 @@ describe "Project" do
       room.height = 100
       game.spawn_player(room, player)
       start_location = player.location
-      player.move(:left, room)
+      player.move(:left, room, " ")
       expect(room.floor[player.location]).to eq(room.floor[start_location - 1])
     end
   end
@@ -99,10 +99,10 @@ describe "Project" do
       room.height = 10
       game.spawn_player(room, player)
       10.times do
-        player.move(:up, room)
+        player.move(:up, room, " ")
       end
       start_location = player.location
-      player.move(:up, room)
+      player.move(:up, room, " ")
       expect(room.floor[start_location]).to eq(room.floor[player.location])
     end
   end
@@ -116,10 +116,10 @@ describe "Project" do
       room.height = 10
       game.spawn_player(room, player)
       10.times do
-        player.move(:down, room)
+        player.move(:down, room, " ")
       end
       start_location = player.location
-      player.move(:down, room)
+      player.move(:down, room, " ")
       expect(room.floor[start_location]).to eq(room.floor[player.location])
     end
   end
@@ -132,10 +132,10 @@ describe "Project" do
       room.height = 100
       game.spawn_player(room, player)
       100.times do
-        player.move(:left, room)
+        player.move(:left, room, " ")
       end
       start_location = player.location
-      player.move(:left, room)
+      player.move(:left, room, " ")
       expect(room.floor[start_location]).to eq(room.floor[player.location])
     end
   end
@@ -148,10 +148,10 @@ describe "Project" do
       room.height = 10
       game.spawn_player(room, player)
       10.times do
-        player.move(:down, room)
+        player.move(:down, room, " ")
       end
       start_location = player.location
-      player.move(:down, room)
+      player.move(:down, room, " ")
       expect(room.floor[start_location]).to eq(room.floor[player.location])
     end
   end
