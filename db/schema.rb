@@ -10,21 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_05_163311) do
+ActiveRecord::Schema.define(version: 2019_03_05_171213) do
 
   create_table "items", force: :cascade do |t|
     t.string "name"
     t.string "category"
-    t.boolean "in_inventory?"
+    t.integer "damage"
+    t.integer "room_id"
+    t.integer "player_id"
+    t.index ["room_id"], name: "index_items_on_room_id"
   end
 
-  create_table "player", force: :cascade do |t|
-    t.string "item_name"
+  create_table "players", force: :cascade do |t|
+    t.string "name"
   end
 
   create_table "rooms", force: :cascade do |t|
-    t.integer "level"
-    t.integer "door_id"
+    t.string "name"
   end
 
 end

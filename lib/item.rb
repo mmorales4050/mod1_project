@@ -1,16 +1,16 @@
 class Item < ActiveRecord::Base
-  belongs_to :rooms
-  belongs_to :players
-
-
-  sword = Item.create(name: "sword", category: "weapon", in_inventory?: false)
-  sheild = Item.create(name: "sheild", category: "weapon", in_inventory?: false)
-  gem = Item.create(name: "ruby", category: "enchantment", in_inventory?: false)
-  axe = Item.create(name: "axe", category: "weapon", in_inventory?: false)
+  belongs_to :player
+  belongs_to :room
 
 
   def self.generate_item
-    self.all.select {|item| item.category == "weapon"}.sample
+    #return an item and save it to database
+    weapon_name = ['Sword', 'Dagger', 'Axe']
+    if  Item.all.length > 0 && rand(100) > 50
+      Item.all.each{ |item|  item.update(damage: item.damage + 1)}
+    else
+      Item.create(name: weapon_name.sample, category: 'weapon', damage: 1)
+    end
   end
 
 end

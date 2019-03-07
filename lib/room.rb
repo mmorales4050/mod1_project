@@ -1,168 +1,76 @@
-require 'io/console'
-
 class Room < ActiveRecord::Base
-  has_many :item
+  has_many :items
+  has_many :players, through: :items
+  attr_accessor :floor, :width, :height
 
+  after_initialize do
+    #we could refactor this to generate a random sized room for every instance
+    @width = `tput cols`.to_i #rand(12...20)
+    @height = (`tput lines`.to_i - 5)  #((width * 2) + 3)
+    @floor = ("-"*@width) + ("|" + (" "*(@width - 2)) + "|\n") *(@height) + ("-"*@width).to_s    # could create a constructor method below that uses the instance height to generate a room with the appropriate number of '-', ' ', and '|'
 
-  after_initialize do |room|
-    # Add class for item
-    @inventory = " "
-    @item_location = nil
-    @door_location = nil
-    @player_location = nil
-    @width = 27
-    @height = 12
-    @room =
-"---------------------------
-|                         |
-|                         |
-|                         |
-|                         |
-|                         |
-|                         |
-|                         |
-|                         |
-|                         |
-|                         |
----------------------------\n\n"
+# "---------------------------
+# |                         |
+# |                         |
+# |                         |
+# |                         |
+# |                         |
+# |                         |
+# |                         |
+# |                         |
+# |                         |
+# |                         |
+# ---------------------------"
+
+    #generates a random number between 1 & 3
+    num_items = rand(1...10)
+    num_items.times do
+      loop do
+        #select a random number between ((after first row)..(before last row))
+        spawn_coordinate = rand((@width + 10)..(@floor.length - (@width +10)))
+          #if the floor[at that coordinate] is blank
+          if @floor[spawn_coordinate] == " "
+            #then replace that coordinate with an 'i' and break out of the loop.
+            @floor[spawn_coordinate] = "i"
+            break
+          end
+      end
+    end
   end
-  # Prints a room to the screen
+
+  # def create_map(width, height)
+  #   floor = ("-"*width) + ("|" + (" "*(width - 2)) + "|\n") *(height) + ("-"*width).to_s    # could create a constructor method below that uses the instance height to generate a room with the appropriate number of '-', ' ', and '|'
+  #   number_of_walls = rand(50..70)
+  #   number_of_walls.times do
+  #     wall_location = (rand(2..(width - 2)) + width)
+  #     height.times do
+  #       if rand(0..100) > 60
+  #         floor[wall_location] = " "
+  #       else
+  #         floor[wall_location] = "x"
+  #       end
+  #       wall_location += (width + 1)
+  #     end
+  #   end
+  #   return floor
+  # end
+
+  def create_map(width, height, runners)
+    floor = ("#"*width) + ("#" + ("#"*(width - 2)) + "#\n") *(height) + ("#"*width).to_s
+    player = Player.new
+    game = Game.new
+    game.spawn_player
+    runners.times do
+      random_less_than_width = rand(0..width)
+      random_less_than_height = rand(0..height)
+      
+    end
+    return floor
+  end
+  #show this instance of the floorplan
   def draw_room
-    puts @room
-    # puts "Inventory:"
-    # puts self.inventory
-  end
-
-  def room(inventory)
-
-    @room
-  end
-
-  def inventory
-
-    @inventory = Item.all.select { |item| item.in_inventory? == true }.map{|item| item.name}
-  end
-
-  #places a '0' for the location of an item
-  def place_item
-    @item_location = ((@room.length/2) + 10)
-    @room[@item_location] = "0"
-  end
-
-  def clear_inventory
-    Item.find_by(name: "sword").update(in_inventory?: false)
-    # inventory.each { |item| item.update(in_inventory?: false)}
-  end
-
-  def pickup_item
-    item = Item.generate_item.update(in_inventory?: true)
-    Player.create(item: item)
-  end
-
-  def spawn_player
-    @player_location = ((@room.length/2) + 15)
-    @room[@player_location] = "@"
-  end
-
-  def move(operator)
-    @room[@player_location] = " "
-
-    case operator
-    when :up
-      if @room[@player_location - (@width + 1)] == " "
-        @player_location -= (@width + 1)
-      elsif @room[@player_location - (@width + 1)] == "0"
-        pickup_item
-        @player_location -= (@width + 1)
-      end
-
-    when :down
-      if @room[@player_location + (@width + 1)] == " "
-        @player_location += (@width + 1)
-      end
-
-    when :right
-      if @room[@player_location + 1] == " "
-        @player_location += 1
-      end
-
-    when :left
-      if @room[@player_location - 1] == " "
-        @player_location -= 1
-      end
-    end
-
-    @room[@player_location] = "@"
-  end
-
-  def clear_screen
-    puts "\e[H\e[2J"
-  end
-
-  def inventory_display
-    puts "Inventory:"
-    puts self.inventory
-    user_input = nil
-    while user_input.nil?
-      system("stty raw -echo")
-      user_input = STDIN.getc
-      system("stty -raw echo")
-    end
-  end
-
-  def movement_loop
-    while true
-      draw_room
-      system("stty raw -echo")
-      user_input = STDIN.getc
-      system("stty -raw echo")
-      case user_input
-      when "d"
-        move(:right)
-      when "a"
-        move(:left)
-      when "w"
-        move(:up)
-      when "s"
-        move(:down)
-      when "i"
-        inventory_display
-      when "p"
-        Item.destroy_all
-        break
-      else
-        puts "select valid command"
-      end
-        # puts self.inventory
-      clear_screen
-    end
+    puts self.floor
   end
 
 
 end
-
-# puts 'Do you want to proceed? y/n'
-#
-# loop do
-#   system("stty raw -echo")
-#   c = STDIN.getc
-#   system("stty -raw echo")
-#
-#   case c
-#   when 'y'
-#     puts 'Yes'
-#     break
-#   when 'n'
-#     puts 'No'
-#     break
-#   else
-#     puts 'Please type "y" or "n"'
-#   end
-# end
-#
-# room = Room.new
-# room.clear_screen
-# room.place_item
-# room.add_bottom_door
-# room.spawn_player
-# room.movement_loop
