@@ -23,7 +23,7 @@ class Room < ActiveRecord::Base
 # ---------------------------"
 
     #generates a random number between 1 & 3
-    num_items = rand(1...10)
+    num_items = rand(10...30)
     num_items.times do
       loop do
         #select a random number between ((after first row)..(before last row))
@@ -63,7 +63,7 @@ class Room < ActiveRecord::Base
     runners.times do
       random_less_than_width = rand(0..width)
       random_less_than_height = rand(0..height)
-      
+
     end
     return floor
   end
