@@ -2,14 +2,6 @@ require "spec_helper"
 
 
 describe "Project" do
-  #
-  # let!(:pluto) { Dog.new("Pluto") }
-  # let!(:fido) { Dog.new("Fido") }
-  # let!(:maddy) { Dog.new("Maddy") }
-  #
-  # after(:each) do
-  #   Dog.class_variable_set(:@@all, [])
-  # end
 
   describe "The player can move up" do
     it "Moves the player up by one space" do

@@ -1,4 +1,4 @@
-Welcome to THE ROOM game
+Welcome to THE WEAPON COLLECTOR game
 
 to run the game:
 

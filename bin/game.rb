@@ -23,9 +23,30 @@ class Game
     user_input
   end
 
+  def title_screen
+    prompt = TTY::Prompt.new
+    font = TTY::Font.new(:doom)
+    pastel = Pastel.new
+
+    puts "\n"
+    puts pastel.bright_white.bold(font.write("   THE       WEAPON       COLLECTOR"))
+    puts "\n"
+    Game.get_input
+  end
+
+  def getch_loop(counter)
+    while counter > 0
+      %x[stty -echo raw]
+      $stdin = StringIO.new("John Doe\n")
+      %x[stty echo -raw]
+      counter -= 1
+    end
+  end
 
   def game_loop
     Game.clear_screen
+    self.title_screen
+
     player = Player.new
     room = Room.create
     # create_map method adds walls to the map
@@ -38,7 +59,7 @@ class Game
     while true
       # Check if items break
       item_just_broke = false
-      if player_inv > 0 && rand(100) == 2
+      if player_inv > 0 && rand(100) < 4
         item_just_broke = true
       end
       player_inv = Item.all.length
