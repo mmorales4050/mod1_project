@@ -6,8 +6,8 @@ class Player < ActiveRecord::Base
 
   def inventory_display
     inv_list = "Inventory: "
-    Item.all.each { |item| inv_list += (item.name + " ") }
-    print inv_list
+    Item.all.each { |item| inv_list += (item.name + " (damage: #{item.damage}) " + ", ") }
+    print inv_list.chomp(", ")
   end
 
 
@@ -45,7 +45,7 @@ class Player < ActiveRecord::Base
     when :up
       if check(:up, " ", room)#room.floor[self.location - (room.width + 1)] == " "
         set(:up, room)
-      elsif check(:up, "i", room)
+      elsif check(:up, "T", room)
         set(:up, room)
         Item.generate_item
       end
@@ -53,7 +53,7 @@ class Player < ActiveRecord::Base
     when :down
       if check(:down, " ", room)#room.floor[self.location - (room.width + 1)] == " "
         set(:down, room)
-      elsif check(:down, "i", room)
+      elsif check(:down, "T", room)
         set(:down, room)
         Item.generate_item
       end
@@ -61,14 +61,14 @@ class Player < ActiveRecord::Base
     when :right
       if check(:right, " ", room)#room.floor[self.location - (room.width + 1)] == " "
         set(:right, room)
-      elsif check(:right, "i", room)
+      elsif check(:right, "T", room)
         set(:right, room)
         Item.generate_item
       end
     when :left
       if check(:left, " ", room)#room.floor[self.location - (room.width + 1)] == " "
         set(:left, room)
-      elsif check(:left, "i", room)
+      elsif check(:left, "T", room)
         set(:left, room)
         Item.generate_item
       end

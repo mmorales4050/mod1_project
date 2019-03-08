@@ -59,7 +59,7 @@ class Game
     while true
       # Check if items break
       item_just_broke = false
-      if player_inv > 0 && rand(100) < 4
+      if player_inv > 0 && rand(150) == 4
         item_just_broke = true
       end
       player_inv = Item.all.length

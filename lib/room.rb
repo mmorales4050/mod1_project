@@ -23,15 +23,15 @@ class Room < ActiveRecord::Base
 # ---------------------------"
 
     #generates a random number between 1 & 3
-    num_items = rand(10...30)
+    num_items = (rand(5..@width) + rand(5..@height))
     num_items.times do
       loop do
         #select a random number between ((after first row)..(before last row))
         spawn_coordinate = rand((@width + 10)..(@floor.length - (@width +10)))
           #if the floor[at that coordinate] is blank
           if @floor[spawn_coordinate] == " "
-            #then replace that coordinate with an 'i' and break out of the loop.
-            @floor[spawn_coordinate] = "i"
+            #then replace that coordinate with an 'T' and break out of the loop.
+            @floor[spawn_coordinate] = "T"
             break
           end
       end
