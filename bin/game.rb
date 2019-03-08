@@ -32,7 +32,7 @@ class Game
     puts pastel.bright_white.bold(font.write("   THE       WEAPON       COLLECTOR"))
     puts "\n"
 
-    puts "You wake up in a strange room with no food and no water but you know you can last about 100 hours before you die of dehydration. \n You hear a voice over an intercom stating that you're doomed to die here until and unless you can find at least 10 weapons. \n Due to the stressful conditions you decide the best course of action is to find as many weapons as possible within the remainder of your life. \n You notice plenty of treasure chests littered around the room and decide to test your luck. \n"
+    puts "You wake up in a strange room with no food and no water but you know you can last about 100 hours before you die of dehydration. \n You hear a voice over an intercom stating that you're doomed to die here until and unless you can find a collection of weapons with a total damage value greater than 50. \n Due to the stressful conditions you decide the best course of action is to find as many weapons as possible within the remainder of your life. \n You notice plenty of treasure chests littered around the room and decide to test your luck. \n"
     Game.get_input
   end
 
@@ -72,7 +72,7 @@ class Game
       user_input = Game.get_input
       Game.clear_screen
       puts "you have #{turn} days left"
-      
+
           case user_input
           when "d"
             player.move(:right, room)
