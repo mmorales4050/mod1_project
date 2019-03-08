@@ -3,18 +3,17 @@ class Item < ActiveRecord::Base
   belongs_to :room
 
   def self.generate_item
-    weapon_name = @@weapon_name
     # Only makes an enchantment 20% of the time GIVEN the player has something in their inventory
-    if  Item.all.length > 0 && rand(100) > 80
+    if Item.all.length > 0 && rand(100) > 80
     # iterates through each item in your inventory and updates their damage value by 1
       Item.all.each{ |item|  item.update(damage: item.damage + 1)}
     else
     # picks a random a weapon_name from the array and creates it in the database with a random damage value between 1-5
-      Item.create(name: weapon_name.sample, category: 'weapon', damage: rand(1..5))
+      Item.create(name: @@weapon_names.sample, category: 'weapon', damage: rand(1..5))
     end
   end
 
-  @@weapon_name = [
+  @@weapon_names = [
                   "Arming sword",
                   "Dagger",
                   "Falchion",
