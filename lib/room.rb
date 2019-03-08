@@ -3,34 +3,23 @@ class Room < ActiveRecord::Base
   has_many :players, through: :items
   attr_accessor :floor, :width, :height
 
+  ##
+
   after_initialize do
-    #we could refactor this to generate a random sized room for every instance
-    @width = `tput cols`.to_i #rand(12...20)
-    @height = (`tput lines`.to_i - 5)  #((width * 2) + 3)
-    @floor = ("-"*@width) + ("|" + (" "*(@width - 2)) + "|\n") *(@height) + ("-"*@width).to_s    # could create a constructor method below that uses the instance height to generate a room with the appropriate number of '-', ' ', and '|'
+    @width = `tput cols`.to_i # set width = to terminal window width
+    @height = (`tput lines`.to_i - 7)  # set length = to terminal window length
+    # floor = string including a top wall +  left side wall + inner space + right side wall + bottom wall
+    @floor = ("-"*@width) + ("|" + (" "*(@width - 2)) + "|\n") *(@height) + ("-"*@width).to_s
 
-# "---------------------------
-# |                         |
-# |                         |
-# |                         |
-# |                         |
-# |                         |
-# |                         |
-# |                         |
-# |                         |
-# |                         |
-# |                         |
-# ---------------------------"
-
-    #generates a random number between 1 & 3
+    # generate a random number commenserate with the size of the terminal
     num_items = (rand(5..@width) + rand(5..@height))
     num_items.times do
       loop do
-        #select a random number between ((after first row)..(before last row))
+        # generate a random coordinate within the inner space of the room
         spawn_coordinate = rand((@width + 10)..(@floor.length - (@width +10)))
-          #if the floor[at that coordinate] is blank
+          # if the floor[at that coordinate] == an empty space...
           if @floor[spawn_coordinate] == " "
-            #then replace that coordinate with an 'T' and break out of the loop.
+            # ... go ahead and place a treasure chest
             @floor[spawn_coordinate] = "T"
             break
           end
@@ -38,39 +27,9 @@ class Room < ActiveRecord::Base
     end
   end
 
-  # def create_map(width, height)
-  #   floor = ("-"*width) + ("|" + (" "*(width - 2)) + "|\n") *(height) + ("-"*width).to_s    # could create a constructor method below that uses the instance height to generate a room with the appropriate number of '-', ' ', and '|'
-  #   number_of_walls = rand(50..70)
-  #   number_of_walls.times do
-  #     wall_location = (rand(2..(width - 2)) + width)
-  #     height.times do
-  #       if rand(0..100) > 60
-  #         floor[wall_location] = " "
-  #       else
-  #         floor[wall_location] = "x"
-  #       end
-  #       wall_location += (width + 1)
-  #     end
-  #   end
-  #   return floor
-  # end
-
-  def create_map(width, height, runners)
-    floor = ("#"*width) + ("#" + ("#"*(width - 2)) + "#\n") *(height) + ("#"*width).to_s
-    player = Player.new
-    game = Game.new
-    game.spawn_player
-    runners.times do
-      random_less_than_width = rand(0..width)
-      random_less_than_height = rand(0..height)
-
-    end
-    return floor
-  end
-  #show this instance of the floorplan
+  # simply prints out the floorplan.
   def draw_room
     puts self.floor
   end
-
 
 end

@@ -49,8 +49,7 @@ class Game
 
     player = Player.new
     room = Room.create
-    # create_map method adds walls to the map
-    #room.floor = room.create_map(room.width, room.height)
+    turn = 100
     spawn_player(room, player)
     room.draw_room
     player_inv = 0
@@ -69,6 +68,7 @@ class Game
       user_input = Game.get_input
       inv_open = false
       Game.clear_screen
+      puts "you have #{turn}'s left"
 
           case user_input
           when "d"
@@ -87,6 +87,9 @@ class Game
           end
 
       room.draw_room
+      turn -= 1
+
+
       if inv_open == true
         player.inventory_display
       end
@@ -104,6 +107,12 @@ class Game
       if item_just_broke == true
         puts "Your #{Item.first.name} just broke!"
         Item.first.delete
+      end
+
+      if turn == 0
+        Game.clear_screen
+        puts "You collected #{Item.all.count} weapons! Congratulations on your hard work and good luck finding a better game. "
+        break
       end
     end
 

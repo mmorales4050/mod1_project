@@ -6,7 +6,9 @@ class Player < ActiveRecord::Base
 
   def inventory_display
     inv_list = "Inventory: "
+    # For each item in the table, find the name and the damage of said item and concat it as a string to the inv_list
     Item.all.each { |item| inv_list += (item.name + " (damage: #{item.damage}) " + ", ") }
+    # cut off the final ", " from the string before printing.
     print inv_list.chomp(", ")
   end
 
@@ -43,7 +45,7 @@ class Player < ActiveRecord::Base
 
     case operator
     when :up
-      if check(:up, " ", room)#room.floor[self.location - (room.width + 1)] == " "
+      if check(:up, " ", room)
         set(:up, room)
       elsif check(:up, "T", room)
         set(:up, room)
@@ -51,7 +53,7 @@ class Player < ActiveRecord::Base
       end
 
     when :down
-      if check(:down, " ", room)#room.floor[self.location - (room.width + 1)] == " "
+      if check(:down, " ", room)
         set(:down, room)
       elsif check(:down, "T", room)
         set(:down, room)
@@ -59,14 +61,14 @@ class Player < ActiveRecord::Base
       end
 
     when :right
-      if check(:right, " ", room)#room.floor[self.location - (room.width + 1)] == " "
+      if check(:right, " ", room)
         set(:right, room)
       elsif check(:right, "T", room)
         set(:right, room)
         Item.generate_item
       end
     when :left
-      if check(:left, " ", room)#room.floor[self.location - (room.width + 1)] == " "
+      if check(:left, " ", room)
         set(:left, room)
       elsif check(:left, "T", room)
         set(:left, room)
